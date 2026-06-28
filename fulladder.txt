@@ -1,0 +1,65 @@
+             Design 
+
+
+/*module full_adder(a,b,cin,sum,cout);
+input a,b, cin;                             //data flow
+output sum, cout;
+assign {cout,sum}=a+b+cin;
+endmodule
+*/
+//behavioural
+/*module full_adder(a,b,cin,sum,cout);
+input a,b, cin;
+output  reg sum;
+output reg cout;
+always @(*) begin
+sum=a^b^cin;
+cout=a&b|b&cin|cin&a;
+end
+endmodule*/
+
+/*//using structural by logic gates
+module full_adder(a,b,cin,sum,cout);
+input a,b;
+input cin;
+output sum,cout;
+wire w1,w2,w3;
+xor(w1,a,b);
+xor(sum,w1,cin);
+and(w2,a,b);
+and(w3,w1,cin);
+or(cout,w2,w3);
+endmodule
+*/
+
+
+//fulladder  using structural model by  half adder
+module half(a,b,s,c);
+input a,b;
+output s,c;
+xor (s,a,b);
+xor (c,a,b);
+endmodule
+
+module full(a,b,cin,sum,cout);
+input a,b,cin;
+output sum,cout;
+wire s1,c1,c2;
+half ha1(.a(a),.b(b),.s(s1),.c(c1));
+half ha2(.a(s1),.b(cin),.s(sum),.c(c2));
+or(cout,c1,c2);
+endmodule
+
+   Test bench
+
+module tb;
+reg a,b,cin;
+wire sum,cout;
+full_adder dut(a,b,cin,sum,cout);
+initial begin
+$monitor("a=%b,b=%b,cin=%b,sum=%b,cout=%b",a,b,cin,sum,cout);
+repeat(10) begin
+{a,b,cin}=$random; #1;
+end
+end
+endmodule
