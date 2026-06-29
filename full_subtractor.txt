@@ -1,0 +1,48 @@
+       design 
+
+module fs(a,b,bin,d,bor);
+input a,b,bin;                   //data flow modelling
+output d,bor;
+assign {bor,d}=a-b-bin;
+endmodule
+
+module fs(a,b,bin,d,bor);
+input a,b,bin;                   behavioural modelling
+output reg d,bor;
+always @(*) begin
+{bor,d}=a-b-bin;
+end
+endmodule
+
+/*
+//full subtractor using half subtractor  | structural modelling
+
+module hs(a,b,d,bor);
+input a,b;
+output d,bor;
+assign {bor,d}=a-b;
+endmodule
+ 
+module fs(a,b,bin,d,bor);
+input a,b,bin;
+output d,bor;
+hs u1(a,b,n1,n2);  //connection by position
+hs u2(n1,bin,d,n3);
+or g1(bor,n2,n3);
+endmodule
+*/
+
+    Test bench
+
+module tb;
+reg a,b,bin;
+wire d,bor;
+fs dut(.*);
+initial begin
+$monitor($time,"a=%b,b=%b,bin=%b,d=%b,bor=%b",a,b,bin,d,bor);
+repeat(10) begin
+{a,b,bin}=$random;
+#1;
+end
+end
+endmodule
