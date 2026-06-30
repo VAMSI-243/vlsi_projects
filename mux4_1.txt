@@ -1,0 +1,87 @@
+/*module mux4_1(i,s,y);
+input [3:0]i;
+input [1:0]s;                 //data flow modelling
+output  y;
+assign y=(s[1]?(s[0]?i[3]:i[2]):(s[0]?i[1]:i[0]));
+
+endmodule*/
+
+/*module mux4_1(i,s,y);
+input [3:0]i;
+input [1:0]s;
+output reg y;
+always @(*)                    //behavioural modelling
+begin
+if(s==2'b00)        y=i[0];     //if statement
+else if (s==2'b01)  y=i[1];
+else if (s==2'b10)  y=i[2];
+else if (s==2'b11)  y=i[3];
+else y=1'bx;
+end
+endmodule */
+ /*                                     //behavioural modelling
+                                         //using case statement
+module mux4_1(i,s,y);                    
+input [3:0]i;
+input [1:0]s;
+output reg y;
+always @(*)
+begin
+case(s)
+2'b00:y=i[0];
+2'b01:y=i[1];
+2'b10:y=i[2];
+2'b11:y=i[3];
+default: y=1'bx;
+endcase
+end
+endmodule*/
+
+/*
+//mux4x_1 using  boolean expression
+
+module mux4_1(i,s1,s0,y);
+input [3:0]i;
+input s1,s0;
+output y;
+assign y=((~s1&~s0&i[0])|(~s1&s0&i[1])|(s1&~s0&i[2])|(s1&s0&i[3]));
+endmodule */
+
+module mux2_1(i,s,y);         //structural modelling
+input [1:0]i;
+input s;
+output y;
+assign y=~s&i[0]|s&i[1];
+endmodule
+
+module mux4_1(i,s1,s0,y); 
+input [3:0]i;
+input s1,s0;
+output y;
+mux2_1 u1(.i(i[1:0]),.s(s0),.y(y0));   //instantiation
+mux2_1 u2(.i(i[3:2]),.s(s0),.y(y1));
+mux2_1 u3(.i({y1,y0}),.s(s1),.y(y));
+endmodule
+
+
+
+
+ Test bench
+
+module tb;
+reg [3:0]i;
+//reg [1:0]s;
+reg s1,s0;
+wire y;
+//mux4_1 dut(i,s,y);
+mux4_1 dut(i,s1,s0,y);
+initial
+begin
+//$monitor("i=%b,s=%b,y=%b",i,s,y);
+$monitor("i=%b,s1=%b,s0=%b,y=%b",i,s1,s0,y);
+repeat(10) begin
+//{i,s}=$random; #1;
+{i,s1,s0}=$random; #1;
+end
+end
+endmodule
