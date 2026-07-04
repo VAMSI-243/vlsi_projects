@@ -1,0 +1,107 @@
+     Design
+
+module encod(i,y);
+input [3:0]i;
+output  [1:0]y;
+assign y[1]=i[2]|i[3];
+assign y[0]=i[1]|i[3];
+//assign y=(i==4'b0001)?2'b00:(i==4'b0010)?2'b01:(i==4'b0100)?2'b10:(i==4'b1000)?2'b11:2'bxx;             //dataflow
+/*always @(*) begin               //behavioural
+case(i)
+4'b0001:y=2'b00;
+4'b0010:y=2'b01;
+4'b0100:y=2'b10;
+4'b1000:y=2'b11;
+default:y=2'bxx;
+endcase
+end*/
+endmodule
+
+/*
+// MSB priority encoder
+module encod(i,y,v);
+input [3:0]i;
+output reg [1:0]y;
+output reg v;
+always @(*) begin
+v=1'b1;
+casex(i)
+4'b0001:y=2'b00;
+4'b001x:y=2'b01;
+4'b01xx:y=2'b10;
+4'b1xxx:y=2'b11;
+default: begin
+y=2'bxx;
+v=1'b0;
+end
+endcase
+end
+endmodule
+*/
+/*
+//LSB priority encoder
+module encod(i,y,v);
+input [3:0]i;
+output reg [1:0]y;
+output reg v;
+always @(*) begin
+v=1'b1;
+casex(i)
+4'bxxx1:y=2'b00;
+4'bxx10:y=2'b01;
+4'bx100:y=2'b10;
+4'b1000:y=2'b11;
+default: begin
+v=1'b0;
+y=2'b00;
+end
+endcase
+end
+endmodule*/
+
+/*module mux4x1(i,s,y);
+input [3:0]i;             //encoder using mux
+input [1:0]s;
+output y;
+assign y=s[1]?(s[0]?i[3]:i[2]):(s[0]?i[1]:i[0]);
+endmodule
+
+module encod(i,y);
+input [3:0]i;          
+output [1:0]y;
+mux4x1 g1({1'b0,1'b0,1'b0,i[2]|i[3]},{i[1],i[0]},y[1]); 
+// g1 i0=i2+i3,i1=0,i2=0,i3=x(0  or 1)
+mux4x1 g2({1'b0,1'b1,1'b0,i[3]},{i[1],i[0]},y[0]);     
+// g2 i0=i3,i1=1,i2=0,i3=x(0 or 1)
+endmodule*/
+
+
+  Testbench
+
+module tb;
+reg [3:0]i;
+wire [1:0]y;
+encod dut(.*);
+initial begin
+$monitor($time,"i=%b,y=%b",i,y,);
+repeat(50) begin
+i=$random;
+#1;
+end
+end
+endmodule
+/*
+module tb;
+reg i0,i1,i2,i3;
+wire y0,y1;
+wire v;
+encod dut(i0,i1,i2,i3,y0,y1,v);
+initial begin
+$monitor($time,"i0=%b,i1=%b,i2=%b,i3=%b,y1=%b,y0=%b,v=%b",i0,i1,i2,i3,y1,y0,v);
+repeat(5) begin
+{i0,i1,i2,i3}=$random;
+#1;
+end
+end
+endmodule
+*/
