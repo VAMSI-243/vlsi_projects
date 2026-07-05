@@ -1,0 +1,29 @@
+           Design 
+
+
+module bin_to_gray(b,g);
+input [3:0]b;
+output [3:0]g;
+assign g=b^(b>>1);
+/*assign g[3]=b[3];
+assign g[2]=b[3]^b[2];
+assign g[1]=b[2]^b[1];
+assign g[0]=b[1]^b[0];
+*/
+endmodule
+
+
+Testbench
+
+module tb;
+reg [3:0]b;
+wire [3:0]g;
+bin_to_gray dut(.*);
+initial
+begin
+$monitor($time,"b=%b,g=%b",b,g);
+repeat(10) begin
+b=$random; #1;
+end
+end
+endmodule
