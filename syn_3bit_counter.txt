@@ -1,0 +1,33 @@
+    Design 
+module counter(clk,rst,m,count);
+input clk,rst,m;
+output reg[2:0]count;
+always @ (posedge clk) begin
+if(rst)
+count<=3'b0;
+else if(m==1)
+count<=count+1'b1;
+else
+count<=count-1'b1;
+end
+endmodule
+
+     Testbench
+
+module tb;
+reg clk,rst,m;
+wire [2:0]count;
+counter dut(clk,rst,m,count);
+initial begin
+clk=0;
+forever #5 clk=~clk;
+end
+initial begin
+$monitor($time,"clk=%b,rst=%b,m=%b,count=%b",clk,rst,m,count);
+ #10 rst=1;
+#10 rst=0;m=1;
+#50 rst=1;
+#10 rst=0;m=0;
+#100 $finish;
+end
+endmodule
