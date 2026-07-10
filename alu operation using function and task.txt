@@ -1,0 +1,66 @@
+      Design
+
+module alu();            //using function
+reg [7:0]a,b;
+reg [3:0]op;
+ reg [31:0]y;
+ integer i;
+function  reg[31:0]alu(input reg[7:0]a,b,input reg [3:0]op);
+begin
+case(op)
+4'b0000:alu=a+b;
+4'b0001:alu=a-b;
+4'b0010:alu=a*b;
+4'b0011:alu=a/b;
+4'b0100:alu=a%b;
+4'b0101:alu= a**b;
+4'b0110:alu=a<<b;
+4'b0111:alu=a>>b;
+default:$display("invalid");
+endcase
+end
+endfunction
+initial begin
+$monitor("a=%0d,b=%0d,op=%0d,alu=%0d",a,b,op,y);
+for(i=0;i<10;i=i+1) begin
+op=i;
+a=8'd5;
+b=8'd3;
+y=alu(a,b,op);#1;
+
+end
+end
+endmodule
+                             //using task
+module alu();
+reg [7:0]a,b;
+reg [3:0]op;
+ reg [31:0]y;
+ integer i;
+task accumlator(input reg[7:0]a,b,input reg [3:0]op,output reg[31:0]alu);
+begin
+case(op)
+4'b0000:alu=a+b;
+4'b0001:alu=a-b;
+4'b0010:alu=a*b;
+4'b0011:alu=a/b;
+4'b0100:alu=a%b;
+4'b0101:alu= a**b;
+4'b0110:alu=a<<b;
+4'b0111:alu=a>>b;
+default:$display("invalid");
+endcase
+end
+endtask
+initial begin
+$monitor("a=%0d,b=%0d,op=%0d,alu=%0d",a,b,op,y);
+for(i=0;i<10;i=i+1) begin
+op=i;
+a=8'd5;
+b=8'd3;
+accumlator(a,b,op,y);#1;
+
+end
+end
+endmodule
+
