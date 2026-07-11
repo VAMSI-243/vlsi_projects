@@ -1,0 +1,89 @@
+    Design
+
+module universal_shift(clk,rst,in,sel,,shift_left,shift_right,out);
+input clk,rst,shift_left,shift_right;
+input [3:0]in;
+input  [1:0]sel;
+output reg[3:0]out;
+always @(posedge clk) begin
+if (rst)
+out<=4'b0000;
+else begin
+case (sel)
+2'b00:out<=out;
+2'b01:out<={shift_right,out[3:1]};
+2'b10:out<={out[2:0],shift_left};
+2'b11:out<=in;
+default:out<=4'b0000;
+endcase
+end
+end
+endmodule
+
+
+   Testbench
+
+
+module tb;
+reg clk;
+reg rst;
+reg shift_left;
+reg shift_right;
+reg [3:0] in;
+reg [1:0] sel;
+wire [3:0] out;
+universal_shift dut(
+    .clk(clk),
+    .rst(rst),
+    .in(in),
+    .sel(sel),
+    .shift_left(shift_left),
+    .shift_right(shift_right),
+    .out(out)
+);
+
+initial begin
+    clk = 0;
+    forever #5 clk = ~clk;
+end
+
+always@(posedge clk) begin
+#1;
+    $display($time,
+    " clk=%b rst=%b sel=%b in=%b shift_left=%b shift_right=%b out=%b",
+    clk,rst,sel,in,shift_left,shift_right,out);
+
+end
+initial begin
+    rst = 1;
+    sel = 2'b00;
+    in = 4'b0000;
+    shift_left = 0;
+    shift_right = 0;
+    #10;
+    rst = 0;
+    sel = 2'b11;
+    in  = 4'b1010;
+    #10;
+    sel = 2'b00;
+    #10;
+    sel = 2'b01;
+    shift_right = 1;
+    #10;
+    shift_right = 0;
+    #10;
+    sel = 2'b10;
+    shift_left = 1;
+    #10;
+    shift_left = 0;
+    #10;
+    sel = 2'b11;
+    in  = 4'b1100;
+    #10;
+    sel = 2'b00;
+    #10;
+
+    $finish;
+end
+
+endmodule
