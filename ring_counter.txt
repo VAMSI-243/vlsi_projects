@@ -1,0 +1,40 @@
+                Design
+
+module ring(clk,rst,m,count);
+input clk,rst,m;
+output reg [3:0]count;
+always @ (posedge clk) begin
+if(rst)
+count<=4'b0001;
+else if(m)
+count<={count[0],count[3:1]};
+else
+count<={count[2:0],count[3]};
+end
+endmodule
+
+
+    Testbench
+
+module tb;
+reg clk,rst,m;
+wire [3:0]count;
+ring dut(.*);
+initial begin
+clk=0;
+forever #5 clk=~clk;
+end
+always@(posedge clk) begin
+#1;
+$display($time,"clk=%b,rst=%b,m=%b,count=%b",clk,rst,m,count);
+end
+initial begin
+#10 rst=1;
+#10 rst=0;
+m=0;
+#50 rst=1;
+#10 rst=0;
+m=1;
+#50 $finish;
+end
+endmodule
