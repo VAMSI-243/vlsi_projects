@@ -1,0 +1,38 @@
+         Design
+
+module mod_n(clk,rst,count);
+parameter N=10;
+parameter width=4;
+input clk,rst;
+output reg [width-1:0]count;
+always @ (posedge clk) begin
+if(rst)
+count<=0;
+else if(count==N-1)
+count<=0;
+else
+count<=count+1;
+end
+endmodule
+
+     Testbench
+
+module tb;
+parameter width=4;
+reg clk,rst;
+wire [width-1:0]count;
+asy_mod_n_counter dut(.*);
+initial begin
+clk=0;
+forever #5 clk=~clk;
+end
+initial begin
+$monitor($time,"clk=%b,rst=%b,count=%b",clk,rst,count);
+#10 rst=1;
+#10 rst=0;
+#120 rst=1;
+#10 rst=0;
+#50 $finish;
+end
+endmodule
+
