@@ -1,0 +1,53 @@
+          Design
+
+module dff(clk,rst,d,q);
+input clk,rst;
+input d;
+output reg q;
+always@(posedge clk)begin
+if(rst)
+q<=0;
+else
+q<=d;
+end
+endmodule
+
+module srff(clk,rst,s,r,q);
+input clk,rst,s,r;
+output q;
+wire qint,D;
+assign D=s|(~r&qint);
+dff u1(.clk(clk),.rst(rst),.d(D),.q(qint));
+assign q=qint;
+endmodule
+
+
+    Testbench
+
+module tb;
+reg clk,rst,s,r;
+wire q;
+srff dut(.clk(clk),.rst(rst),.s(s),.r(r),.q(q));
+initial begin
+clk=0;
+forever #5 clk=~clk;
+end
+
+always@(posedge clk) begin
+#1;
+$display($time,"clk=%b,rst=%b,s=%b,r=%b,q=%b",clk,rst,s,r,q);
+end
+initial begin
+rst = 1;
+#10;
+rst = 0;
+s = 0; r = 0; #10;
+s = 1; r = 0; #10;
+s = 0; r = 0; #10;
+s = 0; r = 1; #10;
+s = 0; r = 0; #10;
+s = 1; r = 1;
+
+#10 $finish;
+end
+endmodule
